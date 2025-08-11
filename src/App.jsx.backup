@@ -1,0 +1,241 @@
+import { useState, useEffect, useRef } from "react";
+import "./App.css";
+
+import { useAuth } from "./contexts/AuthContext.jsx";
+import Home from "./pages/Home.jsx";
+import Academics from "./pages/Academics.jsx";
+import Placements from "./pages/Placements.jsx";
+import Competitions from "./pages/Competitions.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
+import AdminFiles from "./pages/AdminFiles.jsx";
+import GeminiChatBot from "./EduAIChatBot.jsx";
+import { config, account } from "./lib/appwrite";
+import { ScrollReveal, createRipple } from "./lib/motionPresets.js";
+
+function App() {
+  const [tab, setTab] = useState("home");
+  const { user } = useAuth();
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('theme') || 'light'; } catch { return 'light'; }
+  });
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const [initializedThemeFromUser, setInitializedThemeFromUser] = useState(false);
+  const scrollRevealRef = useRef(null);
+  const isAuthed = !!user;
+  const isAdminUser = isAuthed && Array.isArray(config?.adminEmails)
+    && config.adminEmails.some((e) => (e || "").toLowerCase() === (user?.email || "").toLowerCase());
+
+  // Initialize ScrollReveal
+  useEffect(() => {
+    scrollRevealRef.current = new ScrollReveal();
+    return () => {
+      if (scrollRevealRef.current) {
+        scrollRevealRef.current.destroy();
+      }
+    };
+  }, []);
+
+  // Refresh ScrollReveal when tab changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (scrollRevealRef.current) {
+        scrollRevealRef.current.refresh();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [tab]);
+
+  // Add ripple effect to buttons
+  useEffect(() => {
+    const buttons = document.querySelectorAll('button:not(.no-ripple)');
+    const handleRipple = (e) => createRipple(e);
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', handleRipple);
+    });
+
+    return () => {
+      buttons.forEach(button => {
+        button.removeEventListener('click', handleRipple);
+      });
+    };
+  }, [tab]);
+
+  // Smooth tab transitions
+  const handleTabChange = (newTab) => {
+    const main = document.querySelector('main');
+    if (main) {
+      main.classList.add('page-transition-exit', 'page-transition-exit-active');
+      
+      setTimeout(() => {
+        setTab(newTab);
+        main.classList.remove('page-transition-exit', 'page-transition-exit-active');
+        main.classList.add('page-transition-enter');
+        
+        requestAnimationFrame(() => {
+          main.classList.add('page-transition-enter-active');
+        });
+        
+        setTimeout(() => {
+          main.classList.remove('page-transition-enter', 'page-transition-enter-active');
+        }, 500);
+      }, 300);
+    } else {
+      setTab(newTab);
+    }
+  };
+
+  // Redirect to Home after first successful login/signup
+  useEffect(() => {
+    if (isAuthed) setTab("home");
+  }, [isAuthed]);
+
+  // If not logged in, only allow Home, Library, and Profile (for login)
+  useEffect(() => {
+    if (!isAuthed && !["home", "library", "profile"].includes(tab)) {
+      setTab("home");
+    }
+  }, [isAuthed, tab]);
+
+  // Lock body scroll in AI chat mode so only chat scrolls
+  useEffect(() => {
+    if (tab === "ai") {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+    return () => document.body.classList.remove("no-scroll");
+  }, [tab]);
+
+  // Listen to system theme changes if in system mode
+  useEffect(() => {
+    if (!window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => setSystemDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // If user logs in, load their stored preference or set default light if missing
+  useEffect(() => {
+    if (user && !initializedThemeFromUser) {
+      const stored = user?.prefs?.uiTheme;
+      if (stored === 'light' || stored === 'dark') {
+        setTheme(stored);
+      } else {
+        setTheme('light');
+        try { account.updatePrefs({ ...(user.prefs||{}), uiTheme: 'light' }); } catch {}
+      }
+      setInitializedThemeFromUser(true);
+    }
+  }, [user, initializedThemeFromUser]);
+
+  // Apply effective theme + persist to localStorage and (if authed) account prefs
+  useEffect(() => {
+    const effective = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+    document.documentElement.setAttribute('data-theme', effective);
+    try { localStorage.setItem('theme', theme); } catch {}
+    if (initializedThemeFromUser && user) {
+      const persistVal = theme;
+      if (user?.prefs?.uiTheme !== persistVal) {
+        account.updatePrefs({ ...(user.prefs||{}), uiTheme: persistVal }).catch(()=>{});
+      }
+    }
+  }, [theme, systemDark, user, initializedThemeFromUser]);
+
+  // Cycle through light -> dark -> system -> light
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : t === 'dark' ? 'system' : 'light');
+  const setSystem = () => setTheme('system');
+  const effectiveTheme = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+
+  const renderTab = () => {
+    switch (tab) {
+      case "home":
+        return <Home onNavigate={handleTabChange} />;
+      case "ai":
+        return (
+          <div className="chat-full">
+            <GeminiChatBot />
+          </div>
+        );
+      case "academics":
+        return <Academics />;
+      case "placements":
+        return <Placements />;
+      case "competitions":
+        return <Competitions />;
+      case "admin":
+        return <AdminFiles />;
+      case "profile":
+        return <UserProfile onNavigate={handleTabChange} />;
+      default:
+        return <Home onNavigate={handleTabChange} />;
+    }
+  };
+
+  return (
+    <div>
+      <nav className="navbar navbar--elevated">
+        <div className="brand">Edunova <span className="brand__sub">by Edufutura</span></div>
+        <div className="nav__tabs" role="tablist" aria-label="Primary">
+          <button role="tab" className={`nav__tab ${tab === "home" ? "is-active" : ""}`} onClick={() => handleTabChange("home")}>
+            <span className="nav__icon">🏠</span>
+            <span className="nav__label">Home</span>
+          </button>
+          <button role="tab" className={`nav__tab ${tab === "ai" ? "is-active" : ""}`} onClick={() => handleTabChange(isAuthed ? "ai" : "profile")}>
+            <span className="nav__icon">🤖</span>
+            <span className="nav__label">EduAI</span>
+          </button>
+          <button role="tab" className={`nav__tab ${tab === "academics" ? "is-active" : ""}`} onClick={() => handleTabChange(isAuthed ? "academics" : "profile")}>
+            <span className="nav__icon">📚</span>
+            <span className="nav__label">Academics</span>
+          </button>
+          <button role="tab" className={`nav__tab ${tab === "placements" ? "is-active" : ""}`} onClick={() => handleTabChange(isAuthed ? "placements" : "profile")}>
+            <span className="nav__icon">💼</span>
+            <span className="nav__label">Placements</span>
+          </button>
+          <button role="tab" className={`nav__tab ${tab === "competitions" ? "is-active" : ""}`} onClick={() => handleTabChange(isAuthed ? "competitions" : "profile")}>
+            <span className="nav__icon">🏆</span>
+            <span className="nav__label">Competitions</span>
+          </button>
+          {isAdminUser && (
+            <button role="tab" className={`nav__tab ${tab === "admin" ? "is-active" : ""}`} onClick={() => handleTabChange("admin")}>
+              <span className="nav__icon">⚙️</span>
+              <span className="nav__label">Admin</span>
+            </button>
+          )}
+          <button role="tab" className={`nav__tab ${tab === "profile" ? "is-active" : ""}`} onClick={() => handleTabChange("profile")}>
+            <span className="nav__icon">👤</span>
+            <span className="nav__label">Profile</span>
+          </button>
+        </div>
+        <div style={{marginLeft:'auto', display:'flex', alignItems:'center', gap:12}}>
+          <label className="theme-switch" aria-label={"Theme toggle (current: " + theme + ")"} title={"Theme: " + theme}>
+            <input
+              type="checkbox"
+              className="theme-switch__input"
+              checked={effectiveTheme === 'dark'}
+              onChange={toggleTheme}
+            />
+            <span className="theme-switch__track">
+              <span className="theme-switch__thumb" />
+            </span>
+          </label>
+          <button type="button" className={`theme-auto-btn ${theme==='system' ? 'is-active' : ''}`} onClick={setSystem} title="Follow system theme">Auto</button>
+        </div>
+      </nav>
+
+      <main className="container">
+        {renderTab()}
+      </main>
+
+      <footer className="footer">
+        <div className="container">
+          <strong>Edunova</strong> • Empowering Education through Innovation
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;

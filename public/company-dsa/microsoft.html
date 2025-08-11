@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft DSA Questions</title>
+    <style>
+        :root {
+            --primary: #3182ce;
+            --primary-hover: #2c5282;
+            --secondary: #edf2f7;
+            --success: #48bb78;
+            --danger: #f56565;
+            --warning: #ed8936;
+            --info: #4299e1;
+            --light: #f7fafc;
+            --dark: #1a202c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            background: linear-gradient(135deg, #4f46e5, #805ad5);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            color: white;
+        }
+
+        .filter-btn.all {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .filter-btn.all.active {
+            background-color: var(--primary-hover);
+        }
+
+        .filter-btn.easy {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .filter-btn.easy.active {
+            background-color: #2f855a;
+        }
+
+        .filter-btn.medium {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .filter-btn.medium.active {
+            background-color: #c05621;
+        }
+
+        .filter-btn.hard {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .filter-btn.hard.active {
+            background-color: #c53030;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .question-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-card.easy {
+            border-left-color: var(--success);
+        }
+
+        .question-card.medium {
+            border-left-color: var(--warning);
+        }
+
+        .question-card.hard {
+            border-left-color: var(--danger);
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .question-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .question-title a:hover {
+            text-decoration: underline;
+        }
+
+        .question-difficulty {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .question-difficulty.easy {
+            background-color: var(--success);
+        }
+
+        .question-difficulty.medium {
+            background-color: var(--warning);
+        }
+
+        .question-difficulty.hard {
+            background-color: var(--danger);
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .question-acceptance {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .question-frequency {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .question-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .topic-tag {
+            background-color: var(--secondary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #4a5568;
+        }
+
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            color: #718096;
+        }
+
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Microsoft DSA Questions</h1>
+            <p class="subtitle">A curated list of frequently asked Data Structures and Algorithms questions in Microsoft interviews</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search questions by title, topic, or difficulty..." id="searchInput">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn all active" data-filter="all">All Questions</button>
+            <button class="filter-btn easy" data-filter="easy">Easy</button>
+            <button class="filter-btn medium" data-filter="medium">Medium</button>
+            <button class="filter-btn hard" data-filter="hard">Hard</button>
+        </div>
+
+        <div class="questions-grid" id="questionsGrid">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { difficulty: "EASY", title: "Two Sum", frequency: 100.0, acceptance: 0.5507379927222766, link: "https://leetcode.com/problems/two-sum", topics: ["Array", "Hash Table"] },
+            { difficulty: "EASY", title: "Merge Sorted Array", frequency: 83.9, acceptance: 0.5225683816898407, link: "https://leetcode.com/problems/merge-sorted-array", topics: ["Array", "Two Pointers", "Sorting"] },
+            { difficulty: "MEDIUM", title: "Longest Substring Without Repeating Characters", frequency: 79.3, acceptance: 0.3632668882691999, link: "https://leetcode.com/problems/longest-substring-without-repeating-characters", topics: ["Hash Table", "String", "Sliding Window"] },
+            { difficulty: "MEDIUM", title: "Add Two Numbers", frequency: 79.2, acceptance: 0.454396553222087, link: "https://leetcode.com/problems/add-two-numbers", topics: ["Linked List", "Math", "Recursion"] },
+            { difficulty: "HARD", title: "Trapping Rain Water", frequency: 76.8, acceptance: 0.6428753017089767, link: "https://leetcode.com/problems/trapping-rain-water", topics: ["Array", "Two Pointers", "Dynamic Programming", "Stack", "Monotonic Stack"] },
+            { difficulty: "MEDIUM", title: "Longest Palindromic Substring", frequency: 76.2, acceptance: 0.3529835796249885, link: "https://leetcode.com/problems/longest-palindromic-substring", topics: ["Two Pointers", "String", "Dynamic Programming"] },
+            { difficulty: "EASY", title: "Valid Parentheses", frequency: 74.2, acceptance: 0.41845171563748834, link: "https://leetcode.com/problems/valid-parentheses", topics: ["String", "Stack"] },
+            { difficulty: "MEDIUM", title: "Merge Intervals", frequency: 73.7, acceptance: 0.4880648475123527, link: "https://leetcode.com/problems/merge-intervals", topics: ["Array", "Sorting"] },
+            { difficulty: "MEDIUM", title: "Maximum Subarray", frequency: 73.5, acceptance: 0.5173369560272215, link: "https://leetcode.com/problems/maximum-subarray", topics: ["Array", "Divide and Conquer", "Dynamic Programming"] },
+            { difficulty: "HARD", title: "Median of Two Sorted Arrays", frequency: 72.2, acceptance: 0.42939363827074994, link: "https://leetcode.com/problems/median-of-two-sorted-arrays", topics: ["Array", "Binary Search", "Divide and Conquer"] },
+            { difficulty: "EASY", title: "Roman to Integer", frequency: 72.2, acceptance: 0.6415381287729184, link: "https://leetcode.com/problems/roman-to-integer", topics: ["Hash Table", "Math", "String"] },
+            { difficulty: "MEDIUM", title: "3Sum", frequency: 71.7, acceptance: 0.3642304811341831, link: "https://leetcode.com/problems/3sum", topics: ["Array", "Two Pointers", "Sorting"] },
+            { difficulty: "HARD", title: "Reverse Nodes in k-Group", frequency: 70.9, acceptance: 0.6204624534215137, link: "https://leetcode.com/problems/reverse-nodes-in-k-group", topics: ["Linked List", "Recursion"] },
+            { difficulty: "MEDIUM", title: "Spiral Matrix", frequency: 70.7, acceptance: 0.5293292273196886, link: "https://leetcode.com/problems/spiral-matrix", topics: ["Array", "Matrix", "Simulation"] },
+            { difficulty: "MEDIUM", title: "Group Anagrams", frequency: 70.2, acceptance: 0.7033701413662389, link: "https://leetcode.com/problems/group-anagrams", topics: ["Array", "Hash Table", "String", "Sorting"] },
+            { difficulty: "EASY", title: "Merge Two Sorted Lists", frequency: 69.9, acceptance: 0.6628951851492473, link: "https://leetcode.com/problems/merge-two-sorted-lists", topics: ["Linked List", "Recursion"] },
+            { difficulty: "MEDIUM", title: "Search in Rotated Sorted Array", frequency: 68.5, acceptance: 0.4232397421055795, link: "https://leetcode.com/problems/search-in-rotated-sorted-array", topics: ["Array", "Binary Search"] },
+            { difficulty: "MEDIUM", title: "Container With Most Water", frequency: 67.6, acceptance: 0.5717349748819156, link: "https://leetcode.com/problems/container-with-most-water", topics: ["Array", "Two Pointers", "Greedy"] },
+            { difficulty: "MEDIUM", title: "Rotate Image", frequency: 67.3, acceptance: 0.7717075756878434, link: "https://leetcode.com/problems/rotate-image", topics: ["Array", "Math", "Matrix"] },
+            { difficulty: "HARD", title: "Merge k Sorted Lists", frequency: 67.3, acceptance: 0.5579528330363718, link: "https://leetcode.com/problems/merge-k-sorted-lists", topics: ["Linked List", "Divide and Conquer", "Heap (Priority Queue)", "Merge Sort"] },
+            { difficulty: "EASY", title: "Palindrome Number", frequency: 66.7, acceptance: 0.5865359513308419, link: "https://leetcode.com/problems/palindrome-number", topics: ["Math"] },
+            { difficulty: "EASY", title: "Climbing Stairs", frequency: 66.3, acceptance: 0.5334307044034291, link: "https://leetcode.com/problems/climbing-stairs", topics: ["Math", "Dynamic Programming", "Memoization"] },
+            { difficulty: "EASY", title: "Longest Common Prefix", frequency: 65.7, acceptance: 0.44887905683050566, link: "https://leetcode.com/problems/longest-common-prefix", topics: ["String", "Trie"] },
+            { difficulty: "EASY", title: "Remove Duplicates from Sorted Array", frequency: 64.3, acceptance: 0.5945074427312362, link: "https://leetcode.com/problems/remove-duplicates-from-sorted-array", topics: ["Array", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Sort Colors", frequency: 63.9, acceptance: 0.6636207416579357, link: "https://leetcode.com/problems/sort-colors", topics: ["Array", "Two Pointers", "Sorting"] },
+            { difficulty: "MEDIUM", title: "Letter Combinations of a Phone Number", frequency: 63.6, acceptance: 0.6308016839281684, link: "https://leetcode.com/problems/letter-combinations-of-a-phone-number", topics: ["Hash Table", "String", "Backtracking"] },
+            { difficulty: "MEDIUM", title: "Set Matrix Zeroes", frequency: 62.8, acceptance: 0.5893209483631097, link: "https://leetcode.com/problems/set-matrix-zeroes", topics: ["Array", "Hash Table", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Word Search", frequency: 61.1, acceptance: 0.4462623818840988, link: "https://leetcode.com/problems/word-search", topics: ["Array", "String", "Backtracking", "Depth-First Search", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Reverse Integer", frequency: 60.7, acceptance: 0.2986431235283417, link: "https://leetcode.com/problems/reverse-integer", topics: ["Math"] },
+            { difficulty: "MEDIUM", title: "Jump Game", frequency: 59.8, acceptance: 0.39113622224358663, link: "https://leetcode.com/problems/jump-game", topics: ["Array", "Dynamic Programming", "Greedy"] },
+            { difficulty: "MEDIUM", title: "Generate Parentheses", frequency: 59.3, acceptance: 0.7652982888162224, link: "https://leetcode.com/problems/generate-parentheses", topics: ["String", "Dynamic Programming", "Backtracking"] },
+            { difficulty: "MEDIUM", title: "Minimum Path Sum", frequency: 59.3, acceptance: 0.6584778180276342, link: "https://leetcode.com/problems/minimum-path-sum", topics: ["Array", "Dynamic Programming", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Next Permutation", frequency: 58.9, acceptance: 0.423240509456743, link: "https://leetcode.com/problems/next-permutation", topics: ["Array", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Binary Tree Zigzag Level Order Traversal", frequency: 58.4, acceptance: 0.6100932081428964, link: "https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal", topics: ["Tree", "Breadth-First Search", "Binary Tree"] },
+            { difficulty: "EASY", title: "Remove Element", frequency: 57.9, acceptance: 0.594380162102366, link: "https://leetcode.com/problems/remove-element", topics: ["Array", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Validate Binary Search Tree", frequency: 56.8, acceptance: 0.3398040793723859, link: "https://leetcode.com/problems/validate-binary-search-tree", topics: ["Tree", "Depth-First Search", "Binary Search Tree", "Binary Tree"] },
+            { difficulty: "HARD", title: "First Missing Positive", frequency: 56.2, acceptance: 0.4063430766564612, link: "https://leetcode.com/problems/first-missing-positive", topics: ["Array", "Hash Table"] },
+            { difficulty: "MEDIUM", title: "String to Integer (atoi)", frequency: 56.2, acceptance: 0.18717137188755856, link: "https://leetcode.com/problems/string-to-integer-atoi", topics: ["String"] },
+            { difficulty: "EASY", title: "Find the Index of the First Occurrence in a String", frequency: 55.7, acceptance: 0.44463584552574936, link: "https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string", topics: ["Two Pointers", "String", "String Matching"] },
+            { difficulty: "MEDIUM", title: "Swap Nodes in Pairs", frequency: 55.1, acceptance: 0.6651424283411775, link: "https://leetcode.com/problems/swap-nodes-in-pairs", topics: ["Linked List", "Recursion"] },
+            { difficulty: "HARD", title: "Largest Rectangle in Histogram", frequency: 55.1, acceptance: 0.46599452979030864, link: "https://leetcode.com/problems/largest-rectangle-in-histogram", topics: ["Array", "Stack", "Monotonic Stack"] },
+            { difficulty: "MEDIUM", title: "Permutations", frequency: 54.5, acceptance: 0.8013988654300767, link: "https://leetcode.com/problems/permutations", topics: ["Array", "Backtracking"] },
+            { difficulty: "HARD", title: "Regular Expression Matching", frequency: 53.9, acceptance: 0.2897188257598535, link: "https://leetcode.com/problems/regular-expression-matching", topics: ["String", "Dynamic Programming", "Recursion"] },
+            { difficulty: "MEDIUM", title: "Simplify Path", frequency: 52.5, acceptance: 0.4659590867505188, link: "https://leetcode.com/problems/simplify-path", topics: ["String", "Stack"] },
+            { difficulty: "MEDIUM", title: "Find First and Last Position of Element in Sorted Array", frequency: 52.5, acceptance: 0.4614967433195087, link: "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array", topics: ["Array", "Binary Search"] },
+            { difficulty: "MEDIUM", title: "Valid Sudoku", frequency: 51.8, acceptance: 0.6165261376179263, link: "https://leetcode.com/problems/valid-sudoku", topics: ["Array", "Hash Table", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Remove Nth Node From End of List", frequency: 51.8, acceptance: 0.48105414743517527, link: "https://leetcode.com/problems/remove-nth-node-from-end-of-list", topics: ["Linked List", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Combination Sum", frequency: 51.8, acceptance: 0.7393128715843367, link: "https://leetcode.com/problems/combination-sum", topics: ["Array", "Backtracking"] },
+            { difficulty: "EASY", title: "Binary Tree Inorder Traversal", frequency: 51.1, acceptance: 0.7800947825128907, link: "https://leetcode.com/problems/binary-tree-inorder-traversal", topics: ["Stack", "Tree", "Depth-First Search", "Binary Tree"] },
+            { difficulty: "MEDIUM", title: "4Sum", frequency: 50.4, acceptance: 0.37601615398210986, link: "https://leetcode.com/problems/4sum", topics: ["Array", "Two Pointers", "Sorting"] },
+            { difficulty: "MEDIUM", title: "Binary Tree Level Order Traversal", frequency: 50.4, acceptance: 0.6982012546707773, link: "https://leetcode.com/problems/binary-tree-level-order-traversal", topics: ["Tree", "Breadth-First Search", "Binary Tree"] },
+            { difficulty: "EASY", title: "Search Insert Position", frequency: 49.6, acceptance: 0.48338374370417647, link: "https://leetcode.com/problems/search-insert-position", topics: ["Array", "Binary Search"] },
+            { difficulty: "MEDIUM", title: "Divide Two Integers", frequency: 49.6, acceptance: 0.181459966310126, link: "https://leetcode.com/problems/divide-two-integers", topics: ["Math", "Bit Manipulation"] },
+            { difficulty: "MEDIUM", title: "Jump Game II", frequency: 49.6, acceptance: 0.41138459817569833, link: "https://leetcode.com/problems/jump-game-ii", topics: ["Array", "Dynamic Programming", "Greedy"] },
+            { difficulty: "MEDIUM", title: "Decode Ways", frequency: 49.6, acceptance: 0.3610500448626439, link: "https://leetcode.com/problems/decode-ways", topics: ["String", "Dynamic Programming"] },
+            { difficulty: "MEDIUM", title: "Unique Paths", frequency: 49.6, acceptance: 0.6540334827489717, link: "https://leetcode.com/problems/unique-paths", topics: ["Math", "Dynamic Programming", "Combinatorics"] },
+            { difficulty: "MEDIUM", title: "Integer to Roman", frequency: 48.8, acceptance: 0.6785814508062822, link: "https://leetcode.com/problems/integer-to-roman", topics: ["Hash Table", "Math", "String"] },
+            { difficulty: "MEDIUM", title: "Search a 2D Matrix", frequency: 48.8, acceptance: 0.5177720860586073, link: "https://leetcode.com/problems/search-a-2d-matrix", topics: ["Array", "Binary Search", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Edit Distance", frequency: 48.8, acceptance: 0.5818999026876489, link: "https://leetcode.com/problems/edit-distance", topics: ["String", "Dynamic Programming"] },
+            { difficulty: "MEDIUM", title: "Pow(x, n)", frequency: 47.9, acceptance: 0.3647741902866651, link: "https://leetcode.com/problems/powx-n", topics: ["Math", "Recursion"] },
+            { difficulty: "HARD", title: "Sudoku Solver", frequency: 47.9, acceptance: 0.636724036210914, link: "https://leetcode.com/problems/sudoku-solver", topics: ["Array", "Hash Table", "Backtracking", "Matrix"] },
+            { difficulty: "MEDIUM", title: "Subsets", frequency: 47.9, acceptance: 0.8025894997461674, link: "https://leetcode.com/problems/subsets", topics: ["Array", "Backtracking", "Bit Manipulation"] },
+            { difficulty: "HARD", title: "N-Queens", frequency: 47.0, acceptance: 0.7166912693579871, link: "https://leetcode.com/problems/n-queens", topics: ["Array", "Backtracking"] },
+            { difficulty: "EASY", title: "Sqrt(x)", frequency: 45.1, acceptance: 0.40027070819167254, link: "https://leetcode.com/problems/sqrtx", topics: ["Math", "Binary Search"] },
+            { difficulty: "MEDIUM", title: "Restore IP Addresses", frequency: 45.1, acceptance: 0.5238319309402614, link: "https://leetcode.com/problems/restore-ip-addresses", topics: ["String", "Backtracking"] },
+            { difficulty: "MEDIUM", title: "Reverse Linked List II", frequency: 45.1, acceptance: 0.4910139919983585, link: "https://leetcode.com/problems/reverse-linked-list-ii", topics: ["Linked List"] },
+            { difficulty: "HARD", title: "Maximal Rectangle", frequency: 45.1, acceptance: 0.5288771389006409, link: "https://leetcode.com/problems/maximal-rectangle", topics: ["Array", "Dynamic Programming", "Stack", "Matrix", "Monotonic Stack"] },
+            { difficulty: "MEDIUM", title: "Zigzag Conversion", frequency: 44.0, acceptance: 0.5079123792658975, link: "https://leetcode.com/problems/zigzag-conversion", topics: ["String"] },
+            { difficulty: "EASY", title: "Symmetric Tree", frequency: 44.0, acceptance: 0.586338342188093, link: "https://leetcode.com/problems/symmetric-tree", topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"] },
+            { difficulty: "HARD", title: "Longest Valid Parentheses", frequency: 44.0, acceptance: 0.35694464228573786, link: "https://leetcode.com/problems/longest-valid-parentheses", topics: ["String", "Dynamic Programming", "Stack"] },
+            { difficulty: "EASY", title: "Add Binary", frequency: 42.9, acceptance: 0.5519212953877572, link: "https://leetcode.com/problems/add-binary", topics: ["Math", "String", "Bit Manipulation", "Simulation"] },
+            { difficulty: "MEDIUM", title: "Permutations II", frequency: 42.9, acceptance: 0.6099583136361683, link: "https://leetcode.com/problems/permutations-ii", topics: ["Array", "Backtracking", "Sorting"] },
+            { difficulty: "EASY", title: "Plus One", frequency: 41.7, acceptance: 0.4704642768654491, link: "https://leetcode.com/problems/plus-one", topics: ["Array", "Math"] },
+            { difficulty: "MEDIUM", title: "Remove Duplicates from Sorted Array II", frequency: 39.1, acceptance: 0.6215201106403074, link: "https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii", topics: ["Array", "Two Pointers"] },
+            { difficulty: "HARD", title: "Minimum Window Substring", frequency: 39.1, acceptance: 0.44664959668017445, link: "https://leetcode.com/problems/minimum-window-substring", topics: ["Hash Table", "String", "Sliding Window"] },
+            { difficulty: "MEDIUM", title: "Search in Rotated Sorted Array II", frequency: 39.1, acceptance: 0.3858970645425734, link: "https://leetcode.com/problems/search-in-rotated-sorted-array-ii", topics: ["Array", "Binary Search"] },
+            { difficulty: "EASY", title: "Remove Duplicates from Sorted List", frequency: 37.7, acceptance: 0.5435976097059995, link: "https://leetcode.com/problems/remove-duplicates-from-sorted-list", topics: ["Linked List"] },
+            { difficulty: "MEDIUM", title: "Multiply Strings", frequency: 37.7, acceptance: 0.4183026038253261, link: "https://leetcode.com/problems/multiply-strings", topics: ["Math", "String", "Simulation"] },
+            { difficulty: "HARD", title: "Wildcard Matching", frequency: 36.1, acceptance: 0.2936448764073223, link: "https://leetcode.com/problems/wildcard-matching", topics: ["String", "Dynamic Programming", "Greedy", "Recursion"] },
+            { difficulty: "MEDIUM", title: "Subsets II", frequency: 36.1, acceptance: 0.5890592778362556, link: "https://leetcode.com/problems/subsets-ii", topics: ["Array", "Backtracking", "Bit Manipulation"] },
+            { difficulty: "HARD", title: "Text Justification", frequency: 36.1, acceptance: 0.47093296579330096, link: "https://leetcode.com/problems/text-justification", topics: ["Array", "String", "Simulation"] },
+            { difficulty: "MEDIUM", title: "Rotate List", frequency: 36.1, acceptance: 0.39402541769303256, link: "https://leetcode.com/problems/rotate-list", topics: ["Linked List", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Combinations", frequency: 36.1, acceptance: 0.7228625269009074, link: "https://leetcode.com/problems/combinations", topics: ["Backtracking"] },
+            { difficulty: "MEDIUM", title: "Insert Interval", frequency: 34.3, acceptance: 0.42944188605855393, link: "https://leetcode.com/problems/insert-interval", topics: ["Array"] },
+            { difficulty: "MEDIUM", title: "Recover Binary Search Tree", frequency: 34.3, acceptance: 0.555123722617262, link: "https://leetcode.com/problems/recover-binary-search-tree", topics: ["Tree", "Depth-First Search", "Binary Search Tree", "Binary Tree"] },
+            { difficulty: "EASY", title: "Length of Last Word", frequency: 34.3, acceptance: 0.554460250999444, link: "https://leetcode.com/problems/length-of-last-word", topics: ["String"] },
+            { difficulty: "MEDIUM", title: "Spiral Matrix II", frequency: 34.3, acceptance: 0.7294074516081444, link: "https://leetcode.com/problems/spiral-matrix-ii", topics: ["Array", "Matrix", "Simulation"] },
+            { difficulty: "EASY", title: "Same Tree", frequency: 34.3, acceptance: 0.644381734421976, link: "https://leetcode.com/problems/same-tree", topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"] },
+            { difficulty: "MEDIUM", title: "Combination Sum II", frequency: 32.4, acceptance: 0.5721007800388274, link: "https://leetcode.com/problems/combination-sum-ii", topics: ["Array", "Backtracking"] },
+            { difficulty: "MEDIUM", title: "Count and Say", frequency: 32.4, acceptance: 0.5789703915376176, link: "https://leetcode.com/problems/count-and-say", topics: ["String"] },
+            { difficulty: "MEDIUM", title: "Remove Duplicates from Sorted List II", frequency: 32.4, acceptance: 0.492636696849424, link: "https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii", topics: ["Linked List", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "3Sum Closest", frequency: 32.4, acceptance: 0.46598247796697967, link: "https://leetcode.com/problems/3sum-closest", topics: ["Array", "Two Pointers", "Sorting"] },
+            { difficulty: "MEDIUM", title: "Interleaving String", frequency: 32.4, acceptance: 0.41395356616036094, link: "https://leetcode.com/problems/interleaving-string", topics: ["String", "Dynamic Programming"] },
+            { difficulty: "EASY", title: "Maximum Depth of Binary Tree", frequency: 30.3, acceptance: 0.7675472246068681, link: "https://leetcode.com/problems/maximum-depth-of-binary-tree", topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"] },
+            { difficulty: "HARD", title: "Substring with Concatenation of All Words", frequency: 30.3, acceptance: 0.32792399020428403, link: "https://leetcode.com/problems/substring-with-concatenation-of-all-words", topics: ["Hash Table", "String", "Sliding Window"] },
+            { difficulty: "MEDIUM", title: "Partition List", frequency: 30.3, acceptance: 0.5832741355938129, link: "https://leetcode.com/problems/partition-list", topics: ["Linked List", "Two Pointers"] },
+            { difficulty: "MEDIUM", title: "Unique Paths II", frequency: 28.0, acceptance: 0.4275927170306605, link: "https://leetcode.com/problems/unique-paths-ii", topics: ["Array", "Dynamic Programming", "Matrix"] },
+            { difficulty: "HARD", title: "N-Queens II", frequency: 25.3, acceptance: 0.760118752770029, link: "https://leetcode.com/problems/n-queens-ii", topics: ["Backtracking"] },
+            { difficulty: "MEDIUM", title: "Unique Binary Search Trees", frequency: 22.2, acceptance: 0.62136879296033, link: "https://leetcode.com/problems/unique-binary-search-trees", topics: ["Math", "Dynamic Programming", "Tree", "Binary Search Tree", "Binary Tree"] },
+            { difficulty: "MEDIUM", title: "Unique Binary Search Trees II", frequency: 14.1, acceptance: 0.5973929437759685, link: "https://leetcode.com/problems/unique-binary-search-trees-ii", topics: ["Dynamic Programming", "Backtracking", "Tree", "Binary Search Tree", "Binary Tree"] }
+        ];
+
+        // DOM elements
+        const questionsGrid = document.getElementById('questionsGrid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('searchInput');
+
+        // Current filter state
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Render questions based on
+        // Render questions based on current filter and search
+function renderQuestions() {
+    questionsGrid.innerHTML = '';
+    
+    const filteredQuestions = questions.filter(question => {
+        // Apply difficulty filter
+        const matchesFilter = currentFilter === 'all' || 
+                            question.difficulty.toLowerCase() === currentFilter;
+        
+        // Apply search filter
+        const searchTerm = currentSearch.toLowerCase();
+        const matchesSearch = question.title.toLowerCase().includes(searchTerm) ||
+                            question.difficulty.toLowerCase().includes(searchTerm) ||
+                            question.topics.some(topic => topic.toLowerCase().includes(searchTerm));
+        
+        return matchesFilter && matchesSearch;
+    });
+
+    if (filteredQuestions.length === 0) {
+        questionsGrid.innerHTML = '<div class="no-results">No questions found matching your criteria.</div>';
+        return;
+    }
+
+    filteredQuestions.forEach(question => {
+        const questionCard = document.createElement('div');
+        questionCard.className = `question-card ${question.difficulty.toLowerCase()}`;
+        
+        questionCard.innerHTML = `
+            <div class="question-difficulty ${question.difficulty.toLowerCase()}">
+                ${question.difficulty}
+            </div>
+            <h3 class="question-title">
+                <a href="${question.link}" target="_blank">${question.title}</a>
+            </h3>
+            <div class="question-meta">
+                <span class="question-acceptance">
+                    Acceptance: ${(question.acceptance * 100).toFixed(1)}%
+                </span>
+                <span class="question-frequency">
+                    Frequency: ${question.frequency.toFixed(1)}%
+                </span>
+            </div>
+            <div class="question-topics">
+                ${question.topics.map(topic => 
+                    `<span class="topic-tag">${topic}</span>`
+                ).join('')}
+            </div>
+        `;
+        
+        questionsGrid.appendChild(questionCard);
+    });
+}
+
+// Handle filter button clicks
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        // Update current filter and re-render
+        currentFilter = button.dataset.filter;
+        renderQuestions();
+    });
+});
+
+// Handle search input
+searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value.trim();
+    renderQuestions();
+});
+
+// Initial render
+renderQuestions();

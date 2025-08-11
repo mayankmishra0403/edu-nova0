@@ -1,3 +1,7 @@
+# edu-nova0
+
+AI-powered educational/chatbot platform. Bootstrapped with Create React App and extended with custom server scripts and training data. Below is the original CRA guide for reference.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

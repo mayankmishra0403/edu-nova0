@@ -1,0 +1,2426 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accenture DSA Questions</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #f1f5f9;
+            --easy: #22c55e;
+            --medium: #f59e0b;
+            --hard: #ef4444;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--secondary);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            text-align: center;
+            margin: 40px 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            }
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .difficulty-filter {
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+
+        .filter-btn.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-btn.easy {
+            background-color: var(--easy);
+            color: white;
+        }
+
+        .filter-btn.medium {
+            background-color: var(--medium);
+            color: white;
+        }
+
+        .filter-btn.hard {
+            background-color: var(--hard);
+            color: white;
+        }
+
+        .topics-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0 30px;
+        }
+
+        .topic-tag {
+            padding: 8px 16px;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .topic-tag:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .topic-tag.active {
+            opacity: 1;
+            background-color: var(--primary-dark);
+            box-shadow: var(--shadow);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-easy { background-color: var(--easy); color: white; }
+        .difficulty-medium { background-color: var(--medium); color: white; }
+        .difficulty-hard { background-color: var(--hard); color: white; }
+
+        .question-title {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .question-link {
+            color: var(--primary-dark);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .question-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .question-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            font-size: 0.95em;
+            color: var(--text-light);
+            padding-top: 15px;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .topic-badge:hover {
+            transform: translateY(-2px);
+            background-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin: 30px 0;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .difficulty-filter {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .topic-tag {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .question-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scrolling and selection styles */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        ::selection {
+            background-color: var(--primary-light);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Accenture DSA Questions</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">140</div>
+                <div>Total Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">72</div>
+                <div>Easy Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">61</div>
+                <div>Medium Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div>Hard Questions</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <input type="text" class="search-box" placeholder="Search questions..." id="searchInput">
+            <div class="difficulty-filter">
+                <button class="filter-btn easy active" data-difficulty="EASY">Easy</button>
+                <button class="filter-btn medium active" data-difficulty="MEDIUM">Medium</button>
+                <button class="filter-btn hard active" data-difficulty="HARD">Hard</button>
+            </div>
+        </div>
+
+        <div class="topics-filter">
+            <div class="topic-tag" data-topic="Array">Array</div><div class="topic-tag" data-topic="Backtracking">Backtracking</div><div class="topic-tag" data-topic="Binary Search">Binary Search</div><div class="topic-tag" data-topic="Binary Tree">Binary Tree</div><div class="topic-tag" data-topic="Bit Manipulation">Bit Manipulation</div><div class="topic-tag" data-topic="Brainteaser">Brainteaser</div><div class="topic-tag" data-topic="Breadth-First Search">Breadth-First Search</div><div class="topic-tag" data-topic="Combinatorics">Combinatorics</div><div class="topic-tag" data-topic="Counting">Counting</div><div class="topic-tag" data-topic="Counting Sort">Counting Sort</div><div class="topic-tag" data-topic="Database">Database</div><div class="topic-tag" data-topic="Depth-First Search">Depth-First Search</div><div class="topic-tag" data-topic="Divide and Conquer">Divide and Conquer</div><div class="topic-tag" data-topic="Dynamic Programming">Dynamic Programming</div><div class="topic-tag" data-topic="Enumeration">Enumeration</div><div class="topic-tag" data-topic="Graph">Graph</div><div class="topic-tag" data-topic="Greedy">Greedy</div><div class="topic-tag" data-topic="Hash Function">Hash Function</div><div class="topic-tag" data-topic="Hash Table">Hash Table</div><div class="topic-tag" data-topic="Heap (Priority Queue)">Heap (Priority Queue)</div><div class="topic-tag" data-topic="Linked List">Linked List</div><div class="topic-tag" data-topic="Math">Math</div><div class="topic-tag" data-topic="Matrix">Matrix</div><div class="topic-tag" data-topic="Memoization">Memoization</div><div class="topic-tag" data-topic="Monotonic Stack">Monotonic Stack</div><div class="topic-tag" data-topic="Number Theory">Number Theory</div><div class="topic-tag" data-topic="Prefix Sum">Prefix Sum</div><div class="topic-tag" data-topic="Queue">Queue</div><div class="topic-tag" data-topic="Recursion">Recursion</div><div class="topic-tag" data-topic="Rolling Hash">Rolling Hash</div><div class="topic-tag" data-topic="Simulation">Simulation</div><div class="topic-tag" data-topic="Sliding Window">Sliding Window</div><div class="topic-tag" data-topic="Sorting">Sorting</div><div class="topic-tag" data-topic="Stack">Stack</div><div class="topic-tag" data-topic="String">String</div><div class="topic-tag" data-topic="String Matching">String Matching</div><div class="topic-tag" data-topic="Tree">Tree</div><div class="topic-tag" data-topic="Trie">Trie</div><div class="topic-tag" data-topic="Two Pointers">Two Pointers</div><div class="topic-tag" data-topic="Union Find">Union Find</div>
+        </div>
+
+        <div class="question-grid">
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Enumeration"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/smallest-divisible-digit-product-i" class="question-link" target="_blank">Smallest Divisible Digit Product I</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Enumeration</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 100.0%</span>
+                    <span>Acceptance: 65.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Brainteaser"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/bulb-switcher" class="question-link" target="_blank">Bulb Switcher</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Brainteaser</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 100.0%</span>
+                    <span>Acceptance: 53.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Math", "String", "Backtracking", "Greedy", "Number Theory"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/smallest-divisible-digit-product-ii" class="question-link" target="_blank">Smallest Divisible Digit Product II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">String</span><span class="topic-badge">Backtracking</span><span class="topic-badge">Greedy</span><span class="topic-badge">Number Theory</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 100.0%</span>
+                    <span>Acceptance: 9.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Divide and Conquer", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-subarray" class="question-link" target="_blank">Maximum Subarray</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Divide and Conquer</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 100.0%</span>
+                    <span>Acceptance: 51.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/delete-and-earn" class="question-link" target="_blank">Delete and Earn</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 97.3%</span>
+                    <span>Acceptance: 56.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Math", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/happy-number" class="question-link" target="_blank">Happy Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 94.5%</span>
+                    <span>Acceptance: 57.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/two-sum" class="question-link" target="_blank">Two Sum</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 94.5%</span>
+                    <span>Acceptance: 55.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["String", "Rolling Hash", "String Matching", "Hash Function"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/shortest-palindrome" class="question-link" target="_blank">Shortest Palindrome</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Rolling Hash</span><span class="topic-badge">String Matching</span><span class="topic-badge">Hash Function</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 90.7%</span>
+                    <span>Acceptance: 40.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Dynamic Programming", "Memoization"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/climbing-stairs" class="question-link" target="_blank">Climbing Stairs</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Memoization</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 90.7%</span>
+                    <span>Acceptance: 53.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-string" class="question-link" target="_blank">Reverse String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 88.1%</span>
+                    <span>Acceptance: 79.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Depth-First Search", "Breadth-First Search", "Union Find", "Graph"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/divide-nodes-into-the-maximum-number-of-groups" class="question-link" target="_blank">Divide Nodes Into the Maximum Number of Groups</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Depth-First Search</span><span class="topic-badge">Breadth-First Search</span><span class="topic-badge">Union Find</span><span class="topic-badge">Graph</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 88.1%</span>
+                    <span>Acceptance: 67.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/palindrome-number" class="question-link" target="_blank">Palindrome Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 87.3%</span>
+                    <span>Acceptance: 58.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Math", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/happy-number" class="question-link" target="_blank">Happy Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 86.7%</span>
+                    <span>Acceptance: 57.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Dynamic Programming", "Memoization"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/climbing-stairs" class="question-link" target="_blank">Climbing Stairs</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Memoization</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 83.7%</span>
+                    <span>Acceptance: 53.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock" class="question-link" target="_blank">Best Time to Buy and Sell Stock</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 83.7%</span>
+                    <span>Acceptance: 54.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Divide and Conquer", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-subarray" class="question-link" target="_blank">Maximum Subarray</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Divide and Conquer</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 81.9%</span>
+                    <span>Acceptance: 51.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Simulation"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/water-bottles" class="question-link" target="_blank">Water Bottles</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Simulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 81.9%</span>
+                    <span>Acceptance: 70.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["String", "Stack"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/valid-parentheses" class="question-link" target="_blank">Valid Parentheses</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 81.7%</span>
+                    <span>Acceptance: 41.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Math", "Two Pointers"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/rotate-array" class="question-link" target="_blank">Rotate Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 79.5%</span>
+                    <span>Acceptance: 42.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Math", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/roman-to-integer" class="question-link" target="_blank">Roman to Integer</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 79.5%</span>
+                    <span>Acceptance: 64.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["String", "Trie"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-common-prefix" class="question-link" target="_blank">Longest Common Prefix</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Trie</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 76.1%</span>
+                    <span>Acceptance: 44.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Binary Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/nth-digit" class="question-link" target="_blank">Nth Digit</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 76.1%</span>
+                    <span>Acceptance: 35.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Hash Table", "String", "Sliding Window"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-substring-without-repeating-characters" class="question-link" target="_blank">Longest Substring Without Repeating Characters</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Sliding Window</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 76.1%</span>
+                    <span>Acceptance: 36.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Two Pointers", "Stack", "Monotonic Stack"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-width-ramp" class="question-link" target="_blank">Maximum Width Ramp</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Stack</span><span class="topic-badge">Monotonic Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 76.1%</span>
+                    <span>Acceptance: 55.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/two-sum" class="question-link" target="_blank">Two Sum</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 76.1%</span>
+                    <span>Acceptance: 55.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Matrix", "Simulation"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/spiral-matrix" class="question-link" target="_blank">Spiral Matrix</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Matrix</span><span class="topic-badge">Simulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 74.2%</span>
+                    <span>Acceptance: 52.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Two Pointers", "String", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-palindromic-substring" class="question-link" target="_blank">Longest Palindromic Substring</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 74.2%</span>
+                    <span>Acceptance: 35.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-integer" class="question-link" target="_blank">Reverse Integer</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 71.1%</span>
+                    <span>Acceptance: 29.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Two Pointers", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/3sum" class="question-link" target="_blank">3Sum</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 71.1%</span>
+                    <span>Acceptance: 36.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Bit Manipulation", "Sorting", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/sort-integers-by-the-number-of-1-bits" class="question-link" target="_blank">Sort Integers by The Number of 1 Bits</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Bit Manipulation</span><span class="topic-badge">Sorting</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 71.1%</span>
+                    <span>Acceptance: 78.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "String", "Greedy", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/largest-number" class="question-link" target="_blank">Largest Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">String</span><span class="topic-badge">Greedy</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 71.1%</span>
+                    <span>Acceptance: 40.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Math", "Two Pointers"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/rotate-array" class="question-link" target="_blank">Rotate Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 42.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Hash Table", "String", "Backtracking"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/letter-combinations-of-a-phone-number" class="question-link" target="_blank">Letter Combinations of a Phone Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Backtracking</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 63.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/koko-eating-bananas" class="question-link" target="_blank">Koko Eating Bananas</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 48.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/integer-break" class="question-link" target="_blank">Integer Break</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 60.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Dynamic Programming", "Breadth-First Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/perfect-squares" class="question-link" target="_blank">Perfect Squares</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Breadth-First Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 55.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock" class="question-link" target="_blank">Best Time to Buy and Sell Stock</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 54.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Dynamic Programming", "Breadth-First Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/coin-change" class="question-link" target="_blank">Coin Change</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Breadth-First Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 45.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-words-in-a-string" class="question-link" target="_blank">Reverse Words in a String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 68.6%</span>
+                    <span>Acceptance: 50.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Divide and Conquer", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-subarray" class="question-link" target="_blank">Maximum Subarray</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Divide and Conquer</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 67.5%</span>
+                    <span>Acceptance: 51.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/merge-sorted-array" class="question-link" target="_blank">Merge Sorted Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 67.5%</span>
+                    <span>Acceptance: 52.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-peak-element" class="question-link" target="_blank">Find Peak Element</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 67.5%</span>
+                    <span>Acceptance: 46.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["String", "Trie"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-common-prefix" class="question-link" target="_blank">Longest Common Prefix</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Trie</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 67.5%</span>
+                    <span>Acceptance: 44.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "String", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/valid-anagram" class="question-link" target="_blank">Valid Anagram</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 67.5%</span>
+                    <span>Acceptance: 66.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Math"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/plus-one" class="question-link" target="_blank">Plus One</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 63.2%</span>
+                    <span>Acceptance: 47.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Depth-First Search", "Breadth-First Search", "Union Find", "Graph"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/divide-nodes-into-the-maximum-number-of-groups" class="question-link" target="_blank">Divide Nodes Into the Maximum Number of Groups</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Depth-First Search</span><span class="topic-badge">Breadth-First Search</span><span class="topic-badge">Union Find</span><span class="topic-badge">Graph</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 67.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Math", "Recursion", "Queue", "Simulation"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-the-winner-of-the-circular-game" class="question-link" target="_blank">Find the Winner of the Circular Game</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span><span class="topic-badge">Recursion</span><span class="topic-badge">Queue</span><span class="topic-badge">Simulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 82.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Two Pointers", "String", "Greedy"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/separate-black-and-white-balls" class="question-link" target="_blank">Separate Black and White Balls</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span><span class="topic-badge">Greedy</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 64.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Sliding Window"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/contains-duplicate-ii" class="question-link" target="_blank">Contains Duplicate II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sliding Window</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 48.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/merge-sorted-array" class="question-link" target="_blank">Merge Sorted Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 52.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Math", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/roman-to-integer" class="question-link" target="_blank">Roman to Integer</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 64.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Dynamic Programming", "Matrix"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-number-of-moves-in-a-grid" class="question-link" target="_blank">Maximum Number of Moves in a Grid</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Matrix</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 59.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Math", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/number-of-good-pairs" class="question-link" target="_blank">Number of Good Pairs</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 89.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Depth-First Search", "Breadth-First Search", "Union Find", "Matrix"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/number-of-islands" class="question-link" target="_blank">Number of Islands</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Depth-First Search</span><span class="topic-badge">Breadth-First Search</span><span class="topic-badge">Union Find</span><span class="topic-badge">Matrix</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 61.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Dynamic Programming", "Combinatorics"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/unique-paths" class="question-link" target="_blank">Unique Paths</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Combinatorics</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 65.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Stack", "Monotonic Stack"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/next-greater-element-i" class="question-link" target="_blank">Next Greater Element I</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Stack</span><span class="topic-badge">Monotonic Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 73.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-string" class="question-link" target="_blank">Reverse String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 79.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Bit Manipulation"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/single-number" class="question-link" target="_blank">Single Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Bit Manipulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 75.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Math", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-number-of-balls-in-a-box" class="question-link" target="_blank">Maximum Number of Balls in a Box</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 74.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Dynamic Programming", "Recursion", "Memoization"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/fibonacci-number" class="question-link" target="_blank">Fibonacci Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Recursion</span><span class="topic-badge">Memoization</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 72.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array" class="question-link" target="_blank">Remove Duplicates from Sorted Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 59.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/search-insert-position" class="question-link" target="_blank">Search Insert Position</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 48.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Brainteaser"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/bulb-switcher" class="question-link" target="_blank">Bulb Switcher</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Brainteaser</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.1%</span>
+                    <span>Acceptance: 53.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Dynamic Programming", "Breadth-First Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/perfect-squares" class="question-link" target="_blank">Perfect Squares</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Breadth-First Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 55.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-vowels-of-a-string" class="question-link" target="_blank">Reverse Vowels of a String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 57.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Linked List", "Math", "Recursion"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/add-two-numbers" class="question-link" target="_blank">Add Two Numbers</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Linked List</span><span class="topic-badge">Math</span><span class="topic-badge">Recursion</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 45.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-increasing-subsequence" class="question-link" target="_blank">Longest Increasing Subsequence</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 57.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Two Pointers", "Greedy"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/container-with-most-water" class="question-link" target="_blank">Container With Most Water</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Greedy</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 57.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers", "Greedy", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/assign-cookies" class="question-link" target="_blank">Assign Cookies</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Greedy</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 53.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array" class="question-link" target="_blank">Remove Duplicates from Sorted Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 59.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Prefix Sum"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/product-of-array-except-self" class="question-link" target="_blank">Product of Array Except Self</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Prefix Sum</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 67.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Hash Table", "String", "Sliding Window"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/longest-substring-without-repeating-characters" class="question-link" target="_blank">Longest Substring Without Repeating Characters</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Sliding Window</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 36.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-words-in-a-string" class="question-link" target="_blank">Reverse Words in a String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 50.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Divide and Conquer", "Sorting", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/majority-element" class="question-link" target="_blank">Majority Element</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Divide and Conquer</span><span class="topic-badge">Sorting</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 58.0%</span>
+                    <span>Acceptance: 65.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Array", "Binary Search", "Divide and Conquer"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/median-of-two-sorted-arrays" class="question-link" target="_blank">Median of Two Sorted Arrays</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span><span class="topic-badge">Divide and Conquer</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 42.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/valid-palindrome" class="question-link" target="_blank">Valid Palindrome</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 50.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/house-robber" class="question-link" target="_blank">House Robber</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 52.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Binary Search"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/sqrtx" class="question-link" target="_blank">Sqrt(x)</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 40.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/integer-break" class="question-link" target="_blank">Integer Break</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 60.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/pascals-triangle" class="question-link" target="_blank">Pascal's Triangle</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 76.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array" class="question-link" target="_blank">Find First and Last Position of Element in Sorted Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 46.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String", "String Matching"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string" class="question-link" target="_blank">Find the Index of the First Occurrence in a String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span><span class="topic-badge">String Matching</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 44.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/sort-array-by-increasing-frequency" class="question-link" target="_blank">Sort Array by Increasing Frequency</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 80.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/merge-intervals" class="question-link" target="_blank">Merge Intervals</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 48.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["String", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/edit-distance" class="question-link" target="_blank">Edit Distance</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 51.3%</span>
+                    <span>Acceptance: 58.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Linked List"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/remove-duplicates-from-sorted-list" class="question-link" target="_blank">Remove Duplicates from Sorted List</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Linked List</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 54.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Two Pointers", "String", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/is-subsequence" class="question-link" target="_blank">Is Subsequence</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 48.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Simulation", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/count-tested-devices-after-test-operations" class="question-link" target="_blank">Count Tested Devices After Test Operations</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Simulation</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 79.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/strong-password-checker-ii" class="question-link" target="_blank">Strong Password Checker II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 54.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Two Pointers", "String", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/palindromic-substrings" class="question-link" target="_blank">Palindromic Substrings</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Two Pointers</span><span class="topic-badge">String</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 71.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers", "Binary Search", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/count-pairs-whose-sum-is-less-than-target" class="question-link" target="_blank">Count Pairs Whose Sum is Less than Target</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Binary Search</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 87.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Bit Manipulation"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/single-number-ii" class="question-link" target="_blank">Single Number II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Bit Manipulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 64.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/excel-sheet-column-title" class="question-link" target="_blank">Excel Sheet Column Title</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 42.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Hash Table", "Math", "Dynamic Programming", "Heap (Priority Queue)"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/ugly-number-ii" class="question-link" target="_blank">Ugly Number II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Heap (Priority Queue)</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 49.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "String", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/group-anagrams" class="question-link" target="_blank">Group Anagrams</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 70.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Dynamic Programming", "Recursion", "Memoization"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/fibonacci-number" class="question-link" target="_blank">Fibonacci Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Recursion</span><span class="topic-badge">Memoization</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 72.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Stack", "Monotonic Stack"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/next-greater-element-i" class="question-link" target="_blank">Next Greater Element I</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Stack</span><span class="topic-badge">Monotonic Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 73.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Math", "Enumeration", "Number Theory"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/count-primes" class="question-link" target="_blank">Count Primes</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span><span class="topic-badge">Enumeration</span><span class="topic-badge">Number Theory</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 34.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "Greedy", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-original-array-from-doubled-array" class="question-link" target="_blank">Find Original Array From Doubled Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Greedy</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 40.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Math", "Matrix"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/rotate-image" class="question-link" target="_blank">Rotate Image</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Math</span><span class="topic-badge">Matrix</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 77.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/move-zeroes" class="question-link" target="_blank">Move Zeroes</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 62.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["String", "Stack"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/make-the-string-great" class="question-link" target="_blank">Make The String Great</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 68.2%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Linked List", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/middle-of-the-linked-list" class="question-link" target="_blank">Middle of the Linked List</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Linked List</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 80.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "Recursion"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/powx-n" class="question-link" target="_blank">Pow(x, n)</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Recursion</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 36.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "Sorting", "Counting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/majority-element-ii" class="question-link" target="_blank">Majority Element II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sorting</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 53.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/permutation-difference-between-two-strings" class="question-link" target="_blank">Permutation Difference between Two Strings</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 88.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-area-of-longest-diagonal-rectangle" class="question-link" target="_blank">Maximum Area of Longest Diagonal Rectangle</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 36.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/min-cost-climbing-stairs" class="question-link" target="_blank">Min Cost Climbing Stairs</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 66.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Prefix Sum"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/running-sum-of-1d-array" class="question-link" target="_blank">Running Sum of 1d Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Prefix Sum</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 86.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "Linked List", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/intersection-of-two-linked-lists" class="question-link" target="_blank">Intersection of Two Linked Lists</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">Linked List</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 60.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Two Pointers"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/next-permutation" class="question-link" target="_blank">Next Permutation</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 42.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/minimum-right-shifts-to-sort-the-array" class="question-link" target="_blank">Minimum Right Shifts to Sort the Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 58.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "Matrix"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/set-matrix-zeroes" class="question-link" target="_blank">Set Matrix Zeroes</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Matrix</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 58.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/number-of-days-between-two-dates" class="question-link" target="_blank">Number of Days Between Two Dates</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 51.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Math", "String", "Stack"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/basic-calculator-ii" class="question-link" target="_blank">Basic Calculator II</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">String</span><span class="topic-badge">Stack</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 45.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/delete-and-earn" class="question-link" target="_blank">Delete and Earn</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 56.6%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Hash Table", "String", "Backtracking"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-unique-binary-string" class="question-link" target="_blank">Find Unique Binary String</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Backtracking</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 79.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Sorting", "Heap (Priority Queue)"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/find-subsequence-of-length-k-with-the-largest-sum" class="question-link" target="_blank">Find Subsequence of Length K With the Largest Sum</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sorting</span><span class="topic-badge">Heap (Priority Queue)</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 45.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Math", "String", "Recursion"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/integer-to-english-words" class="question-link" target="_blank">Integer to English Words</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">String</span><span class="topic-badge">Recursion</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 34.3%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Two Pointers", "Greedy", "Sorting"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/boats-to-save-people" class="question-link" target="_blank">Boats to Save People</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span><span class="topic-badge">Greedy</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 59.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Hash Table", "String", "Backtracking"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/letter-combinations-of-a-phone-number" class="question-link" target="_blank">Letter Combinations of a Phone Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Backtracking</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 63.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Linked List", "Recursion"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/reverse-linked-list" class="question-link" target="_blank">Reverse Linked List</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Linked List</span><span class="topic-badge">Recursion</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 78.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Sorting", "Counting Sort"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/how-many-numbers-are-smaller-than-the-current-number" class="question-link" target="_blank">How Many Numbers Are Smaller Than the Current Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sorting</span><span class="topic-badge">Counting Sort</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 87.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Hash Table", "String", "Sliding Window", "Counting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/substrings-of-size-three-with-distinct-characters" class="question-link" target="_blank">Substrings of Size Three with Distinct Characters</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Hash Table</span><span class="topic-badge">String</span><span class="topic-badge">Sliding Window</span><span class="topic-badge">Counting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 75.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/perfect-number" class="question-link" target="_blank">Perfect Number</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 44.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Simulation", "Prefix Sum"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/ant-on-the-boundary" class="question-link" target="_blank">Ant on the Boundary</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Simulation</span><span class="topic-badge">Prefix Sum</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 74.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search", "Matrix"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/search-a-2d-matrix" class="question-link" target="_blank">Search a 2D Matrix</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span><span class="topic-badge">Matrix</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 51.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Two Pointers"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/remove-element" class="question-link" target="_blank">Remove Element</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Two Pointers</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 59.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Database"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/second-highest-salary" class="question-link" target="_blank">Second Highest Salary</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Database</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 43.0%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/binary-search" class="question-link" target="_blank">Binary Search</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 59.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "String"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/truncate-sentence" class="question-link" target="_blank">Truncate Sentence</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">String</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 85.9%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="HARD" data-topics='["Array", "Greedy"]'>
+                <span class="difficulty difficulty-hard">HARD</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/candy" class="question-link" target="_blank">Candy</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Greedy</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 44.4%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Math", "Simulation"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/count-operations-to-obtain-zero" class="question-link" target="_blank">Count Operations to Obtain Zero</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Math</span><span class="topic-badge">Simulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 74.7%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/max-consecutive-ones" class="question-link" target="_blank">Max Consecutive Ones</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 61.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["String", "Dynamic Programming", "Backtracking"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/generate-parentheses" class="question-link" target="_blank">Generate Parentheses</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">String</span><span class="topic-badge">Dynamic Programming</span><span class="topic-badge">Backtracking</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 76.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-depth-of-binary-tree" class="question-link" target="_blank">Maximum Depth of Binary Tree</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Tree</span><span class="topic-badge">Depth-First Search</span><span class="topic-badge">Breadth-First Search</span><span class="topic-badge">Binary Tree</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 76.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Binary Search"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/peak-index-in-a-mountain-array" class="question-link" target="_blank">Peak Index in a Mountain Array</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Binary Search</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 67.8%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Bit Manipulation"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/sum-of-values-at-indices-with-k-set-bits" class="question-link" target="_blank">Sum of Values at Indices With K Set Bits</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Bit Manipulation</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 86.1%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="MEDIUM" data-topics='["Array", "Dynamic Programming"]'>
+                <span class="difficulty difficulty-medium">MEDIUM</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/maximum-product-subarray" class="question-link" target="_blank">Maximum Product Subarray</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Dynamic Programming</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 34.5%</span>
+                </div>
+            </div>
+
+            <div class="question-card" data-difficulty="EASY" data-topics='["Array", "Hash Table", "Sorting"]'>
+                <span class="difficulty difficulty-easy">EASY</span>
+                <h2 class="question-title">
+                    <a href="https://leetcode.com/problems/contains-duplicate" class="question-link" target="_blank">Contains Duplicate</a>
+                </h2>
+                <div class="topics">
+                    <span class="topic-badge">Array</span><span class="topic-badge">Hash Table</span><span class="topic-badge">Sorting</span>
+                </div>
+                <div class="question-stats">
+                    <span>Frequency: 42.0%</span>
+                    <span>Acceptance: 62.8%</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const questionCards = document.querySelectorAll('.question-card');
+        const difficultyButtons = document.querySelectorAll('.filter-btn');
+        const topicTags = document.querySelectorAll('.topic-tag');
+        
+        function filterQuestions() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeDifficulties = Array.from(difficultyButtons)
+                .filter(btn => btn.classList.contains('active'))
+                .map(btn => btn.dataset.difficulty);
+            const activeTopics = Array.from(topicTags)
+                .filter(tag => tag.classList.contains('active'))
+                .map(tag => tag.dataset.topic);
+            
+            questionCards.forEach(card => {
+                const title = card.querySelector('.question-title').textContent.toLowerCase();
+                const difficulty = card.dataset.difficulty;
+                const topics = JSON.parse(card.dataset.topics);
+                
+                const matchesSearch = title.includes(searchTerm);
+                const matchesDifficulty = activeDifficulties.includes(difficulty);
+                const matchesTopics = activeTopics.length === 0 || 
+                    topics.some(topic => activeTopics.includes(topic));
+                
+                if (matchesSearch && matchesDifficulty && matchesTopics) {
+                    card.style.display = 'flex';
+                    card.style.opacity = '1';
+                } else {
+                    card.style.display = 'none';
+                    card.style.opacity = '0';
+                }
+            });
+        }
+        
+        // Add smooth transitions for filtering
+        questionCards.forEach(card => {
+            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        });
+        
+        searchInput.addEventListener('input', filterQuestions);
+        
+        difficultyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                filterQuestions();
+            });
+        });
+        
+        topicTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.classList.toggle('active');
+                filterQuestions();
+            });
+        });
+
+        // Add smooth scrolling for all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
