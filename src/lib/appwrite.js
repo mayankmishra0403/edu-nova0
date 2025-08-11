@@ -12,16 +12,40 @@ import { Client, Account, Databases, Storage, ID, Query, Permission, Role } from
 
 const endpoint = process.env.REACT_APP_APPWRITE_ENDPOINT;
 const project = process.env.REACT_APP_APPWRITE_PROJECT_ID;
+const hasCoreConfig = Boolean(endpoint && project);
 
-if (!endpoint || !project) {
+if (!hasCoreConfig) {
   // eslint-disable-next-line no-console
-  console.warn('[Appwrite] Missing endpoint or project id. Set REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID');
+  console.warn('[Appwrite] Missing endpoint or project id. Set REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID then restart the dev server.');
 }
 
-export const client = new Client().setEndpoint(endpoint || '').setProject(project || '');
-export const account = new Account(client);
-export const databases = new Databases(client);
-export const storage = new Storage(client);
+function missingProxy(name) {
+  return new Proxy(
+    {},
+    {
+      get() {
+        throw new Error(
+          `[Appwrite] ${name} unavailable because required env vars are missing. Define REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID in .env and restart (CRA only loads them at startup).`
+        );
+      },
+    }
+  );
+}
+
+let _client;
+try {
+  if (hasCoreConfig) {
+    _client = new Client().setEndpoint(endpoint).setProject(project);
+  }
+} catch (e) {
+  // eslint-disable-next-line no-console
+  console.error('[Appwrite] Failed initializing client:', e);
+}
+
+export const client = _client || missingProxy('client');
+export const account = _client ? new Account(_client) : missingProxy('account');
+export const databases = _client ? new Databases(_client) : missingProxy('databases');
+export const storage = _client ? new Storage(_client) : missingProxy('storage');
 export { ID, Query, Permission, Role };
 
 export const config = {
