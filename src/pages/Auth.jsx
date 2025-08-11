@@ -103,6 +103,10 @@ export default function Auth() {
   const handleGoogle = () => {
     const success = runtimeBaseUrl;
     const failure = success + "?auth_error=1";
+    if (!account) {
+      setError("Appwrite not configured. Add REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID, then refresh.");
+      return;
+    }
     account.createOAuth2Session("google", success, failure);
   };
 

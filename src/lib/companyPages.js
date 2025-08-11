@@ -3,7 +3,7 @@
 
 import { databases, storage, ID, config } from './appwrite';
 
-if (!config.companyDsaBucketId) {
+if (!config.companyDsaBucketId && process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line no-console
   console.warn('[companyPages] Missing companyDsaBucketId env variable');
 }

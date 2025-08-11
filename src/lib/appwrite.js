@@ -60,8 +60,8 @@ export const config = {
   avatarsBucketId: process.env.REACT_APP_APPWRITE_AVATARS_BUCKET_ID, // dedicated bucket for profile pictures (optional)
 };
 
-// Lightweight diagnostic (only IDs, no secrets) – runs once
-if (typeof window !== 'undefined') {
+// Lightweight diagnostic (only in development)
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   const missing = [];
   ['companyDsaBucketId','companyDsaPagesCollectionId','companyDsaUsageCollectionId','databaseId'].forEach(k=>{ if(!config[k]) missing.push(k); });
   if (missing.length) {
