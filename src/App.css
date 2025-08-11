@@ -1637,6 +1637,19 @@ button:not(.no-ripple):active::after {
   box-shadow: 0 12px 24px -6px rgba(124, 58, 237, 0.15);
 }
 
+/* Profile progress + skills editor */
+.profile-progress { display:flex; flex-direction:column; gap:4px; }
+.profile-progress__bar { position:relative; width:220px; height:8px; background: var(--surface-2); border-radius: 6px; overflow:hidden; border:1px solid var(--border); }
+.profile-progress__fill { position:absolute; inset:0; background: var(--grad-brand); transition: width .5s var(--easing-standard); }
+.profile-progress__label { font-size:12px; font-weight:600; color: var(--muted); }
+.skills-editor { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px 8px; border:1px solid var(--border); border-radius:10px; min-height:46px; background: var(--surface-2); cursor:text; }
+.skill-chip { background: var(--brand-50); color:#3b0764; border:1px solid var(--border); padding:6px 10px; border-radius: 999px; font-size:12px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; position:relative; }
+.skill-chip span { font-weight:700; margin-left:2px; }
+.skill-chip:hover { filter:brightness(.95); }
+.skill-input { flex:1; min-width:140px; border:0; outline:none; background:transparent; padding:4px; font-size:14px; }
+[data-theme='dark'] .skills-editor { background: var(--surface); }
+[data-theme='dark'] .skill-chip { background:#312742; color:#e6e8ef; }
+
 /* Avatar hover effect */
 .avatar {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

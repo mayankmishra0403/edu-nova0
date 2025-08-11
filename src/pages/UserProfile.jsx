@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import Auth from "./Auth.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { account, storage, databases, ID, config, Permission, Role, Query } from "../lib/appwrite";
@@ -25,9 +25,63 @@ export default function UserProfile({ onNavigate }) {
   const [semester, setSemester] = useState("");
   const [section, setSection] = useState("");
   const [bio, setBio] = useState("");
-  const [skills, setSkills] = useState(""); // comma separated
+  const [skillsInput, setSkillsInput] = useState("");
+  const [skills, setSkills] = useState([]); // array of strings
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
+  // Autosave / local draft
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState(null);
+  const draftLoadedRef = useRef(false);
+
+  const requiredFields = useMemo(() => ({ name: displayName.trim(), phone: phone.trim(), rollNo: rollNo.trim() }), [displayName, phone, rollNo]);
+  const completion = useMemo(() => {
+    const total = Object.keys(requiredFields).length;
+    const done = Object.values(requiredFields).filter(Boolean).length;
+    return Math.round((done / total) * 100);
+  }, [requiredFields]);
+
+  const localDraftKey = user ? `profileDraft_${user.$id}` : null;
+
+  // Helper sanitation
+  const sanitizeUrl = (val) => {
+    if (!val) return "";
+    let v = val.trim();
+    if (!/^https?:\/\//i.test(v)) return ""; // require protocol
+    try { const u = new URL(v); return u.toString(); } catch { return ""; }
+  };
+
+  const normalizeNumeric = (v) => {
+    if (v === null || v === undefined || v === "") return "";
+    const n = parseInt(v, 10);
+    return Number.isFinite(n) ? n : "";
+  };
+
+  const mergedPayload = () => {
+    return {
+      name: displayName.trim(),
+      phone: phone.trim(),
+      rollNo: rollNo.trim(),
+      branch: branch.trim(),
+      year: normalizeNumeric(year),
+      semester: normalizeNumeric(semester),
+      section: section.trim(),
+      bio: bio.trim(),
+      skills: skills,
+      github: sanitizeUrl(github),
+      linkedin: sanitizeUrl(linkedin),
+      updatedAt: new Date().toISOString(),
+    };
+  };
+
+  // Persist draft locally
+  useEffect(() => {
+    if (!localDraftKey) return;
+    const draft = {
+      displayName, phone, rollNo, branch, year, semester, section, bio, skills, github, linkedin, ts: Date.now()
+    };
+    try { localStorage.setItem(localDraftKey, JSON.stringify(draft)); } catch {}
+  }, [displayName, phone, rollNo, branch, year, semester, section, bio, skills, github, linkedin, localDraftKey]);
 
   useEffect(() => {
     if (user) {
@@ -58,7 +112,7 @@ export default function UserProfile({ onNavigate }) {
               if (existing.semester) setSemester(existing.semester);
               if (existing.section) setSection(existing.section);
               if (existing.bio) setBio(existing.bio);
-              if (existing.skills) setSkills(Array.isArray(existing.skills) ? existing.skills.join(', ') : existing.skills);
+              if (existing.skills) setSkills(Array.isArray(existing.skills) ? existing.skills.filter(Boolean) : String(existing.skills).split(',').map(s=>s.trim()).filter(Boolean));
               if (existing.github) setGithub(existing.github);
               if (existing.linkedin) setLinkedin(existing.linkedin);
             } else {
@@ -97,6 +151,27 @@ export default function UserProfile({ onNavigate }) {
             // Also hydrate from prefs if present
             if (user?.prefs?.phone && !phone) setPhone(user.prefs.phone);
             if (user?.prefs?.rollNo && !rollNo) setRollNo(user.prefs.rollNo);
+            // Load local draft only once (after remote fetch) if exists
+            if (!draftLoadedRef.current && localDraftKey) {
+              draftLoadedRef.current = true;
+              try {
+                const raw = localStorage.getItem(localDraftKey);
+                if (raw) {
+                  const d = JSON.parse(raw);
+                  if (!existing) setDisplayName(d.displayName || displayName);
+                  if (d.phone && !phone) setPhone(d.phone);
+                  if (d.rollNo && !rollNo) setRollNo(d.rollNo);
+                  if (d.branch) setBranch(d.branch);
+                  if (d.year !== undefined) setYear(d.year);
+                  if (d.semester !== undefined) setSemester(d.semester);
+                  if (d.section) setSection(d.section);
+                  if (d.bio) setBio(d.bio);
+                  if (Array.isArray(d.skills) && d.skills.length) setSkills(d.skills);
+                  if (d.github) setGithub(d.github);
+                  if (d.linkedin) setLinkedin(d.linkedin);
+                }
+              } catch {}
+            }
           } catch (e) {
             console.warn('[profile] doc load/create failed', e?.message);
           }
@@ -126,20 +201,27 @@ export default function UserProfile({ onNavigate }) {
     finally { setBusy(false); }
   };
 
+  const commitProfile = async (payload) => {
+    if (!user) return;
+    const profileCollection = config.effectiveUserProfileCollectionId || config.userProfileCollectionId;
+    if (config.databaseId && profileCollection && profileDocId) {
+      try {
+        await databases.updateDocument(config.databaseId, profileCollection, profileDocId, payload);
+      } catch (e) {
+        throw e;
+      }
+    }
+  };
+
   const saveProfile = async (e) => {
     e.preventDefault(); setSavingName(true); setMsg(""); setErr("");
     try {
-      // Update name
       await account.updateName(displayName || "");
-      // Update prefs with phone, rollNo (and avatar already handled separately)
-      await account.updatePrefs({ ...(user?.prefs || {}), phone, rollNo });
-      // Update profile document if present
-      const profileCollection = config.effectiveUserProfileCollectionId || config.userProfileCollectionId;
-      if (config.databaseId && profileCollection && profileDocId) {
-        try { await databases.updateDocument(config.databaseId, profileCollection, profileDocId, { name: displayName, phone, rollNo, branch, year, semester, section, bio, skills: skills.split(',').map(s=>s.trim()).filter(Boolean), github, linkedin, updatedAt: new Date().toISOString() }); } catch {}
-      }
+      await account.updatePrefs({ ...(user?.prefs || {}), phone: phone.trim(), rollNo: rollNo.trim() });
+      await commitProfile(mergedPayload());
       const fresh = await account.get(); setUser(fresh);
       setMsg("Profile saved.");
+      setLastSavedAt(new Date());
     } catch (e) { setErr(e?.message || "Update failed"); }
     finally { setSavingName(false); }
   };
@@ -165,7 +247,7 @@ export default function UserProfile({ onNavigate }) {
       setAvatarUrl(url);
       const profileCollection = config.effectiveUserProfileCollectionId || config.userProfileCollectionId;
       if (config.databaseId && profileCollection && profileDocId) {
-        try { await databases.updateDocument(config.databaseId, profileCollection, profileDocId, { avatarFileId: fileId, name: displayName, phone, rollNo, branch, year, semester, section, bio, skills: skills.split(',').map(s=>s.trim()).filter(Boolean), github, linkedin, updatedAt: new Date().toISOString() }); } catch {}
+        try { await databases.updateDocument(config.databaseId, profileCollection, profileDocId, { avatarFileId: fileId, ...mergedPayload() }); } catch {}
       }
       setMsg("Avatar updated.");
     } catch (e) { setErr(e?.message || "Upload failed"); }
@@ -178,16 +260,50 @@ export default function UserProfile({ onNavigate }) {
     try { await account.deleteSession("current"); setUser(null); } catch {}
   };
 
+  // Autosave (debounced)
+  useEffect(() => {
+    if (!user) return;
+    if (!displayName.trim() || !phone.trim() || !rollNo.trim()) return; // only when required filled
+    const handle = setTimeout(async () => {
+      try {
+        setAutoSaving(true);
+        await account.updatePrefs({ ...(user?.prefs || {}), phone: phone.trim(), rollNo: rollNo.trim() });
+        await commitProfile(mergedPayload());
+        setLastSavedAt(new Date());
+      } catch (e) {
+        console.warn('Autosave failed', e?.message);
+      } finally { setAutoSaving(false); }
+    }, 900);
+    return () => clearTimeout(handle);
+  }, [displayName, phone, rollNo, branch, year, semester, section, bio, skills, github, linkedin, user]);
+  // Skill handlers (must be before any early returns)
+  const addSkill = useCallback(() => {
+    const val = skillsInput.trim();
+    if (!val) return;
+    const lowered = val.toLowerCase();
+    if (skills.some(s => s.toLowerCase() === lowered)) { setSkillsInput(''); return; }
+    setSkills(prev => [...prev, val]);
+    setSkillsInput('');
+  }, [skillsInput, skills]);
+
+  const removeSkill = (s) => setSkills(prev => prev.filter(x => x !== s));
+
+  const onSkillInputKey = (e) => {
+    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); }
+    else if (e.key === 'Backspace' && !skillsInput) { setSkills(prev => prev.slice(0, -1)); }
+  };
+
   if (loading) return <div className="container" style={{ padding: 24 }}>Loading...</div>;
   if (!user) return <div className="container" style={{ padding: 24 }}><Auth /></div>;
 
   const needsAvatar = !avatarUrl;
   const needsPhone = !phone.trim();
   const needsRoll = !rollNo.trim();
-  const incomplete = needsAvatar || needsPhone || needsRoll || !displayName.trim();
+  const incomplete = needsPhone || needsRoll || !displayName.trim();
+
   return (
     <div className="container" style={{ padding: 24 }}>
-      <section className="profile">
+      <section className="profile" style={{ display:'grid', gap:24 }}>
         <div className="profile__header">
           <div
             className="avatar"
@@ -216,11 +332,20 @@ export default function UserProfile({ onNavigate }) {
           <div className="profile__info">
             <h2>{user.name || user.email}</h2>
             <p className="muted">{user.email}</p>
-            {incomplete && (
-              <div className="alert error" style={{marginTop:8, padding:'6px 10px'}}>
-                Complete your profile: {needsAvatar && 'photo '} {needsPhone && 'phone '} {needsRoll && 'roll no '} {!displayName.trim() && 'name'}
+            <div style={{marginTop:8, display:'flex', flexDirection:'column', gap:8}}>
+              {incomplete && (
+                <div className="alert error" style={{marginTop:0, padding:'6px 10px'}}>
+                  Complete required: {needsPhone && ' phone'} {needsRoll && ' roll no'} {!displayName.trim() && ' name'}
+                </div>
+              )}
+              <div className="profile-progress">
+                <div className="profile-progress__bar" aria-label={`Profile completion ${completion}%`}>
+                  <div className="profile-progress__fill" style={{ width: completion + '%' }} />
+                </div>
+                <span className="profile-progress__label">{completion}% complete</span>
+                {needsAvatar && <span className="muted" style={{fontSize:12}}>Add a photo for a richer profile.</span>}
               </div>
-            )}
+            </div>
             <div className="badges">
               {user.emailVerification ? (
                 <span className="badge">Verified</span>
@@ -233,10 +358,10 @@ export default function UserProfile({ onNavigate }) {
           </div>
         </div>
 
-        <div className="profile__grid">
-          <div className="profile__card">
-            <h3>Profile details</h3>
-            <form className="profile__form" onSubmit={saveProfile}>
+        <div className="profile__grid" style={{alignItems:'start'}}>
+          <div className="profile__card" style={{display:'flex', flexDirection:'column', gap:16}}>
+            <h3 style={{margin:0}}>Profile details</h3>
+            <form className="profile__form" onSubmit={saveProfile} style={{flexDirection:'column', alignItems:'stretch'}}>
               <label>
                 <span>Name *</span>
                 <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name" required />
@@ -271,10 +396,23 @@ export default function UserProfile({ onNavigate }) {
                 <span>Bio</span>
                 <textarea value={bio} onChange={(e)=>setBio(e.target.value)} placeholder="Short introduction" rows={3} />
               </label>
-              <label>
-                <span>Skills (comma separated)</span>
-                <input value={skills} onChange={(e)=>setSkills(e.target.value)} placeholder="e.g. C, Java, DSA" />
-              </label>
+              <div style={{display:'flex', flexDirection:'column', gap:6}}>
+                <span style={{fontWeight:600}}>Skills</span>
+                <div className="skills-editor" onClick={() => document.getElementById('skillInput')?.focus()}>
+                  {skills.map(s => (
+                    <button type="button" key={s} className="skill-chip" title="Remove" onClick={() => removeSkill(s)}>{s}<span aria-hidden>×</span></button>
+                  ))}
+                  <input
+                    id="skillInput"
+                    value={skillsInput}
+                    onChange={e=>setSkillsInput(e.target.value)}
+                    onKeyDown={onSkillInputKey}
+                    placeholder={skills.length ? '' : 'Add a skill and press Enter'}
+                    className="skill-input"
+                  />
+                </div>
+                {skills.length === 0 && <span className="muted" style={{fontSize:12}}>Add some skills to showcase what you know.</span>}
+              </div>
               <div style={{display:'grid', gap:12, gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))'}}>
                 <label>
                   <span>GitHub</span>
@@ -285,7 +423,11 @@ export default function UserProfile({ onNavigate }) {
                   <input value={linkedin} onChange={(e)=>setLinkedin(e.target.value)} placeholder="LinkedIn profile URL" />
                 </label>
               </div>
-              <button className="button primary" disabled={savingName || incomplete} title={incomplete ? 'Fill all required fields & avatar' : ''}>{savingName ? "Saving..." : "Save"}</button>
+              <div style={{display:'flex', alignItems:'center', gap:12, flexWrap:'wrap', marginTop:8}}>
+                <button className="button primary" disabled={savingName || incomplete}>{savingName ? "Saving..." : "Save"}</button>
+                {autoSaving && <span className="muted" style={{fontSize:12}}>Autosaving...</span>}
+                {!autoSaving && lastSavedAt && <span className="muted" style={{fontSize:12}}>Saved {lastSavedAt.toLocaleTimeString()}</span>}
+              </div>
             </form>
           </div>
 
@@ -310,8 +452,8 @@ export default function UserProfile({ onNavigate }) {
           </div>
         </div>
 
-        {msg && <div className="alert success" style={{ marginTop: 12 }}>{msg}</div>}
-        {err && <div className="alert error" style={{ marginTop: 12 }}>{err}</div>}
+  {msg && <div className="alert success" style={{ marginTop: 12 }}>{msg}</div>}
+  {err && <div className="alert error" style={{ marginTop: 12 }}>{err}</div>}
       </section>
     </div>
   );
