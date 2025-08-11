@@ -48,6 +48,13 @@ jobs:
           REACT_APP_APPWRITE_AVATARS_BUCKET_ID=${{ secrets.APPWRITE_AVATARS_BUCKET_ID }}
           EOF
           echo "Created .env with provided secrets (some may be blank if secret not set)."
+      - name: Verify critical env vars
+        run: |
+          echo '--- .env preview (redacted) ---'
+          grep -E 'REACT_APP_APPWRITE_(ENDPOINT|PROJECT_ID)=' .env | sed -E 's/=.*/=***redacted***/'
+          if grep -q '^REACT_APP_APPWRITE_ENDPOINT=$' .env; then echo 'ERROR: REACT_APP_APPWRITE_ENDPOINT is empty (set secret APPWRITE_ENDPOINT)'; exit 1; fi
+          if grep -q '^REACT_APP_APPWRITE_PROJECT_ID=$' .env; then echo 'ERROR: REACT_APP_APPWRITE_PROJECT_ID is empty (set secret APPWRITE_PROJECT_ID)'; exit 1; fi
+          echo 'Critical env vars present.'
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token
