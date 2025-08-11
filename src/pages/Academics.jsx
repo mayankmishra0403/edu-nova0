@@ -151,33 +151,26 @@ export default function Academics() {
 
   // DB-driven content state (year -> subjects -> units)
   const [dbLoading, setDbLoading] = useState(false);
-  const [dbError, setDbError] = useState("");
   const [dbDocs, setDbDocs] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState(null);
 
   useEffect(() => {
     let on = true;
     setDbLoading(true);
-    setDbError("");
-    setSelectedSubject(null);
+  // reset any transient UI state
     meta
       .list({ year })
       .then((d) => {
         if (!on) return;
         setDbDocs(d || []);
       })
-      .catch((e) => on && setDbError(e?.message || "Failed to load content"))
+  .catch(() => {})
       .finally(() => on && setDbLoading(false));
     return () => {
       on = false;
     };
   }, [year]);
 
-  const dbSubjects = useMemo(() => {
-    const s = new Set();
-    (dbDocs || []).forEach((d) => d?.subject && s.add(d.subject));
-    return Array.from(s);
-  }, [dbDocs]);
+  // (Removed unused dbSubjects memo to satisfy CI lint rules)
 
   const isDbYear = ["1", "2", "3", "4"].includes(year);
 

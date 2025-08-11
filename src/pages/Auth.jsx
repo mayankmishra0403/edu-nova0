@@ -9,7 +9,7 @@ function useQueryParams() {
 }
 
 export default function Auth() {
-  const { setUser } = useAuth();
+  const { user: currentUser, setUser } = useAuth();
   const [mode, setMode] = useState("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +24,16 @@ export default function Auth() {
   const [newPass2, setNewPass2] = useState("");
 
   const qp = useQueryParams();
+
+  // Determine a safe runtime base URL (avoid using localhost in production deploy)
+  const runtimeBaseUrl = useMemo(() => {
+    const envBase = config.appBaseUrl;
+    const origin = window.location.origin;
+    if (!envBase) return origin;
+    // If env points to localhost but we're on a different host (production), prefer actual origin
+    if (envBase.includes('localhost') && !origin.includes('localhost')) return origin;
+    return envBase;
+  }, []);
 
   useEffect(() => {
     const userId = qp.get("userId");
@@ -49,18 +59,29 @@ export default function Auth() {
   const handleSignin = async (e) => {
     e.preventDefault(); resetState(); setLoading(true);
     try {
+      // If already logged in with a different account, clear that session first
+      if (currentUser && currentUser.email && currentUser.email.toLowerCase() !== email.toLowerCase()) {
+        try { await account.deleteSession('current'); } catch {}
+      }
       await account.createEmailPasswordSession(email, password);
       const u = await account.get();
       setUser(u);
       setMessage("Signed in successfully.");
     } catch (err) {
-      setError(err?.message || "Sign in failed");
+      const raw = err?.message || 'Sign in failed';
+      if (/failed to fetch/i.test(raw)) {
+        setError("Network error. Check Appwrite endpoint, CORS allowed origins (add this domain), and HTTPS.");
+      } else setError(raw);
     } finally { setLoading(false); }
   };
 
   const handleSignup = async (e) => {
     e.preventDefault(); resetState(); setLoading(true);
     try {
+      // If a different session is active, remove it before creating a new account
+      if (currentUser && currentUser.email && currentUser.email.toLowerCase() !== email.toLowerCase()) {
+        try { await account.deleteSession('current'); } catch {}
+      }
       await account.create(ID.unique(), email, password, name || undefined);
       // Optional: auto login then send verification
       try {
@@ -68,17 +89,19 @@ export default function Auth() {
         const u = await account.get();
         setUser(u);
       } catch {}
-      const redirect = config.appBaseUrl || window.location.origin;
-      await account.createVerification(redirect);
+      await account.createVerification(runtimeBaseUrl);
       setMessage("Account created. Verification email sent—please check your inbox.");
       setMode("signin");
     } catch (err) {
-      setError(err?.message || "Sign up failed");
+      const raw = err?.message || 'Sign up failed';
+      if (/failed to fetch/i.test(raw)) {
+        setError("Network error during sign up. Verify Appwrite endpoint & CORS settings for this domain.");
+      } else setError(raw);
     } finally { setLoading(false); }
   };
 
   const handleGoogle = () => {
-    const success = config.appBaseUrl || window.location.origin;
+    const success = runtimeBaseUrl;
     const failure = success + "?auth_error=1";
     account.createOAuth2Session("google", success, failure);
   };
@@ -86,7 +109,7 @@ export default function Auth() {
   const startRecovery = async () => {
     resetState(); setLoading(true);
     try {
-      await account.createRecovery(email, (config.appBaseUrl || window.location.origin) + "?recovery=1");
+  await account.createRecovery(email, runtimeBaseUrl + "?recovery=1");
       setMessage("Password recovery email sent.");
     } catch (e) { setError(e?.message || "Recovery failed"); }
     finally { setLoading(false); }
@@ -174,8 +197,8 @@ export default function Auth() {
         {message && <div className="alert success">{message}</div>}
         {error && <div className="alert error">{error}</div>}
 
-        <p className="muted" style={{ marginTop: 8 }}>
-          Email verification is sent after sign up. Configure redirects in Appwrite settings: {config.appBaseUrl}
+        <p className="muted" style={{ marginTop: 8, fontSize:12 }}>
+          Redirect base: {runtimeBaseUrl}. Ensure this domain is added in Appwrite (Project → Settings → Platforms & Auth Redirects) and in CORS Allowed Origins.
         </p>
       </div>
     </div>
