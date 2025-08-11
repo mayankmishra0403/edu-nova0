@@ -53,10 +53,15 @@ export function AuthProvider({ children }) {
         console.warn('[auth] ensureProfileDoc failed', e?.message);
       }
     };
-    account.get()
-      .then(async (u) => { if (mounted) { setUser(u); await ensureProfileDoc(u); } })
-      .catch(() => {})
-      .finally(() => { if (mounted) setLoading(false); });
+    if (account) {
+      account.get()
+        .then(async (u) => { if (mounted) { setUser(u); await ensureProfileDoc(u); } })
+        .catch(() => {})
+        .finally(() => { if (mounted) setLoading(false); });
+    } else {
+      // No appwrite client yet; treat as logged out but finish loading
+      if (mounted) setLoading(false);
+    }
     return () => { mounted = false; };
   }, []);
 

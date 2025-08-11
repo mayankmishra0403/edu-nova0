@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-
 import { useAuth } from "./contexts/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
 import Academics from "./pages/Academics.jsx";
@@ -11,6 +10,16 @@ import AdminDashboard from "./pages/AdminDashboard.jsx";
 import GeminiChatBot from "./pages/EduAIChatBot.jsx";
 import { config, account } from "./lib/appwrite";
 import motionUtils from "./lib/motionPresets.js";
+
+function EnvBanner() {
+  const coreOk = !!(config?.endpoint && config?.project);
+  if (coreOk) return null;
+  return (
+    <div style={{background:'#ffe8e8', color:'#900', padding:'6px 12px', fontSize:14, textAlign:'center'}}>
+      Missing Appwrite env vars (endpoint/project). Define REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID then restart dev server.
+    </div>
+  );
+}
 
 const { ScrollReveal, createRipple } = motionUtils;
 
@@ -180,6 +189,7 @@ function App() {
 
   return (
     <div>
+      <EnvBanner />
       <nav className="navbar navbar--elevated">
         <div className="brand">Edunova <span className="brand__sub">by Edufutura</span></div>
         <div className="nav__tabs" role="tablist" aria-label="Primary">
