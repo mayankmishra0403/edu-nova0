@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 /* Simple env validator for CRA build/start */
-const required = [
-  'REACT_APP_APPWRITE_ENDPOINT',
-  'REACT_APP_APPWRITE_PROJECT_ID'
-];
+try { require('dotenv').config(); } catch {}
 
+const required = ['REACT_APP_APPWRITE_ENDPOINT','REACT_APP_APPWRITE_PROJECT_ID'];
 const missing = required.filter(k => !process.env[k]);
 if (missing.length) {
-  console.error('\n[verify-env] Missing required env vars: ' + missing.join(', '));
-  console.error('Add them to your .env locally (restart) or to hosting provider environment settings.');
-  process.exit(1);
+  console.warn('\n[verify-env] Missing required env vars (continuing so banner can show inside app): ' + missing.join(', '));
+  console.warn('[verify-env] Add them to .env then fully restart dev server.');
 }
 
 // Optional warnings (non-fatal)

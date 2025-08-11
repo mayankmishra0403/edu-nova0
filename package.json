@@ -13,6 +13,7 @@
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
     "dompurify": "^3.2.6",
+    "dotenv": "^16.6.1",
     "firebase": "^11.6.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.539.0",
@@ -24,10 +25,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-  "prestart": "node scripts/verify-env.js",
-  "start": "react-scripts start",
-  "prebuild": "node scripts/verify-env.js",
-  "build": "react-scripts build",
+    "prestart": "node scripts/verify-env.js",
+    "start": "react-scripts start",
+    "prebuild": "node scripts/verify-env.js",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
