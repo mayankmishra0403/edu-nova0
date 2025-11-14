@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import Auth from "./Auth.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { account, storage, databases, ID, config, Permission, Role, Query } from "../lib/appwrite";
+import { account, storage, databases, ID, config, Permission, Role, Query } from "../lib/firebase";
 
 export default function UserProfile({ onNavigate }) {
   const { user, setUser, loading } = useAuth();

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { storage, config } from "../lib/appwrite";
+import { storage, config } from "../lib/firebase";
 import { meta } from "../lib/files";
 
 const PHYSICS_FILE_ID = "68979577003aabf9c510";

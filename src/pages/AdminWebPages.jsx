@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { config } from '../lib/appwrite';
+import { config } from '../lib/firebase';
 import { companyPages } from '../lib/companyPages';
 
 export default function AdminWebPages() {
@@ -17,7 +17,7 @@ export default function AdminWebPages() {
   if (!config.companyDsaBucketId || !config.companyDsaPagesCollectionId) {
     return <div className="container" style={{padding:24}}>
       <h2>Admin • Company Web Pages</h2>
-      <div className="alert error">Missing environment variables for company pages. Set REACT_APP_APPWRITE_COMPANY_DSA_BUCKET_ID and REACT_APP_APPWRITE_COMPANY_DSA_PAGES_COLLECTION_ID.</div>
+      <div className="alert error">Missing environment variables for company pages. Set REACT_APP_FIREBASE_COMPANY_DSA_BUCKET_ID and REACT_APP_FIREBASE_COMPANY_DSA_PAGES_COLLECTION_ID in .env.</div>
     </div>;
   }
 

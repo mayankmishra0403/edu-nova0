@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { databases, ID, config, Query } from '../lib/appwrite.js';
+import { databases, ID, config, Query } from '../lib/firebase.js';
 
 
 const GeminiChatBot = () => {

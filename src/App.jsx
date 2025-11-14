@@ -8,15 +8,16 @@ import Competitions from "./pages/Competitions.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import GeminiChatBot from "./pages/EduAIChatBot.jsx";
-import { config, account } from "./lib/appwrite";
+import { config, account } from "./lib/firebase";
 import motionUtils from "./lib/motionPresets.js";
 
 function EnvBanner() {
-  const coreOk = !!(config?.endpoint && config?.project);
+  // Check for Firebase configuration
+  const coreOk = !!(config?.project);
   if (coreOk) return null;
   return (
     <div style={{background:'#ffe8e8', color:'#900', padding:'6px 12px', fontSize:14, textAlign:'center'}}>
-      Missing Appwrite env vars (endpoint/project). Define REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID then restart dev server.
+      Missing backend configuration. Define REACT_APP_FIREBASE_PROJECT_ID in .env then restart dev server.
     </div>
   );
 }

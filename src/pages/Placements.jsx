@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from "react";
 import { companyLocalManifest } from "../data/companyLocalManifest";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { databases, ID, config } from "../lib/appwrite";
+import { databases, ID, config } from "../lib/firebase";
 
 export default function Placements() {
   const [search, setSearch] = useState("");
@@ -18,7 +18,7 @@ export default function Placements() {
   const filtered = companiesSource.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
 
-  // Track user selection in Appwrite + update hash for deep link
+  // Track user selection in database + update hash for deep link
   const logUsage = useCallback(async (company, extra = {}) => {
     if (user && config.companyDsaUsageCollectionId && config.databaseId) {
       try {

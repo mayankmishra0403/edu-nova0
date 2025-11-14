@@ -1,9 +1,9 @@
-// File management utilities for Appwrite Storage + Database metadata
+// File management utilities for Firebase Storage + Firestore metadata
 // - Creates file URLs (view/download)
 // - CRUD metadata in a dedicated collection (optional)
-// - Normalizes Appwrite SDK return values
+// - Normalizes Firebase SDK return values
 
-import { storage, databases, ID, config } from "./appwrite";
+import { storage, databases, ID, config } from "./firebase";
 
 export const fileUrl = {
   view: (bucketId, fileId) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
-import { storage, config } from './appwrite';
+import { storage, config } from './firebase';
 
 // Progressive + cached sanitized HTML loader.
 // Options:

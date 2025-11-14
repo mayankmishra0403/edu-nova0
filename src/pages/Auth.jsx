@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ID } from "appwrite";
-import { account } from "../lib/appwrite";
+import { ID } from "../lib/firebase";
+import { account } from "../lib/firebase";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { config } from "../lib/appwrite";
+import { config } from "../lib/firebase";
 
 function useQueryParams() {
   return useMemo(() => new URLSearchParams(window.location.search), []);
@@ -70,7 +70,7 @@ export default function Auth() {
     } catch (err) {
       const raw = err?.message || 'Sign in failed';
       if (/failed to fetch/i.test(raw)) {
-        setError("Network error. Check Appwrite endpoint, CORS allowed origins (add this domain), and HTTPS.");
+    setError("Network error. Check backend endpoint, CORS allowed origins (add this domain), and HTTPS.");
       } else setError(raw);
     } finally { setLoading(false); }
   };
@@ -95,7 +95,7 @@ export default function Auth() {
     } catch (err) {
       const raw = err?.message || 'Sign up failed';
       if (/failed to fetch/i.test(raw)) {
-        setError("Network error during sign up. Verify Appwrite endpoint & CORS settings for this domain.");
+  setError("Network error during sign up. Verify backend endpoint & CORS settings for this domain.");
       } else setError(raw);
     } finally { setLoading(false); }
   };
@@ -104,7 +104,7 @@ export default function Auth() {
     const success = runtimeBaseUrl;
     const failure = success + "?auth_error=1";
     if (!account) {
-      setError("Appwrite not configured. Add REACT_APP_APPWRITE_ENDPOINT and REACT_APP_APPWRITE_PROJECT_ID, then refresh.");
+  setError("Backend not configured. Add REACT_APP_FIREBASE_PROJECT_ID in .env, then refresh.");
       return;
     }
     account.createOAuth2Session("google", success, failure);
@@ -202,7 +202,7 @@ export default function Auth() {
         {error && <div className="alert error">{error}</div>}
 
         <p className="muted" style={{ marginTop: 8, fontSize:12 }}>
-          Redirect base: {runtimeBaseUrl}. Ensure this domain is added in Appwrite (Project → Settings → Platforms & Auth Redirects) and in CORS Allowed Origins.
+          Redirect base: {runtimeBaseUrl}. Ensure this domain is added in Firebase Authentication settings (authorized domains).
         </p>
       </div>
     </div>

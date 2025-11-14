@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { account, databases, ID, config, Permission, Role, Query } from '../lib/appwrite';
+import { account, databases, ID, config, Permission, Role, Query } from '../lib/firebase';
 
 const AuthContext = createContext({ user: null, loading: true });
 export const useAuth = () => useContext(AuthContext);
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
         .catch(() => {})
         .finally(() => { if (mounted) setLoading(false); });
     } else {
-      // No appwrite client yet; treat as logged out but finish loading
+      // No backend client yet; treat as logged out but finish loading
       if (mounted) setLoading(false);
     }
     return () => { mounted = false; };

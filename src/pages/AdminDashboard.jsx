@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminFiles from './AdminFiles.jsx';
 import AdminWebPages from './AdminWebPages.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { config } from '../lib/appwrite';
+import { config } from '../lib/firebase';
 
 // Unified admin dashboard combining file manager and web page uploader.
 export default function AdminDashboard() {

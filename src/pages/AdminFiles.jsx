@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { config } from "../lib/appwrite";
+import { config } from "../lib/firebase";
 import { uploadToBucket, deleteFromBucket, meta, fileUrl } from "../lib/files";
 
 const YEAR_OPTIONS = [

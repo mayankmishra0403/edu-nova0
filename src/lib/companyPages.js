@@ -1,7 +1,7 @@
 // Company DSA pages management utilities
 // Handles: listing, creating (metadata) after uploading HTML to storage, and deleting
 
-import { databases, storage, ID, config } from './appwrite';
+import { databases, storage, ID, config } from './firebase';
 
 if (!config.companyDsaBucketId && process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line no-console
